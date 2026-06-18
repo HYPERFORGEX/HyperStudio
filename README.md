@@ -1,0 +1,3 @@
+# HyperStudio
+
+Scaffold generated.
