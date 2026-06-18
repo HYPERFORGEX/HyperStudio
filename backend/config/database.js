@@ -1,16 +1,42 @@
-const mongoose = require("mongoose");
+const sqlite3 = require("sqlite3").verbose();
+const path = require("path");
 
-async function connectDatabase() {
-    try {
-        await mongoose.connect(process.env.MONGO_URI);
+let db;
 
-        console.log("==================================");
-        console.log("✓ MongoDB Connected Successfully");
-        console.log("==================================");
-    } catch (err) {
-        console.error(err);
-        process.exit(1);
-    }
+function connectDatabase() {
+    return new Promise((resolve, reject) => {
+        const dbPath = path.join(__dirname, "..", "database.sqlite");
+
+        db = new sqlite3.Database(dbPath, (err) => {
+            if (err) {
+                console.error("❌ Failed to connect to SQLite:", err.message);
+                return reject(err);
+            }
+
+            console.log("==================================");
+            console.log("✓ SQLite Connected Successfully");
+            console.log("==================================");
+
+            db.run(`
+                CREATE TABLE IF NOT EXISTS users (
+                    id INTEGER PRIMARY KEY AUTOINCREMENT,
+                    username TEXT UNIQUE NOT NULL,
+                    email TEXT UNIQUE NOT NULL,
+                    password TEXT NOT NULL,
+                    created_at DATETIME DEFAULT CURRENT_TIMESTAMP
+                );
+            `);
+
+            resolve(db);
+        });
+    });
 }
 
-module.exports = connectDatabase;
+function getDatabase() {
+    return db;
+}
+
+module.exports = {
+    connectDatabase,
+    getDatabase
+};
