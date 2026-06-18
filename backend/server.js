@@ -11,6 +11,7 @@ const rateLimit = require("express-rate-limit");
 const connectDatabase = require("./config/database");
 
 const app = express();
+app.set("trust proxy", 1);
 
 connectDatabase();
 
