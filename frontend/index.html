@@ -1,0 +1,705 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HyperStudio AI — Integrated Synthesis Core</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;600&family=Plus+Jakarta+Sans:wght@400;500;600;700&family=Space+Grotesk:wght@500;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+    <div id="canvas-container"></div>
+    <div class="aurora-bg"></div>
+    <div class="mouse-glow" id="mouseGlow"></div>
+
+    <div id="preloader">
+        <div class="loader-logo"><div class="logo-mark"></div><span>HyperStudio AI</span></div>
+        <div class="loader-track"><div class="loader-bar" id="loaderBar"></div></div>
+    </div>
+
+    <div id="websiteMasterLayout">
+        <nav class="navbar" id="navbar">
+            <a onclick="navigateToRoute('home')" class="logo" style="cursor:pointer;">
+                <div class="logo-mark"></div> HyperStudio AI
+            </a>
+            <div class="nav-center">
+                <a onclick="navigateToRoute('home')" class="nav-link active" data-route="home">Home</a>
+                <a onclick="navigateToRoute('chat')" class="nav-link" data-route="chat">AI Chat</a>
+                <a onclick="navigateToRoute('studio')" class="nav-link" data-route="studio">Plugin Builder</a>
+                <a onclick="navigateToRoute('projects')" class="nav-link" data-route="projects">Projects</a>
+                <a onclick="navigateToRoute('features')" class="nav-link" data-route="features">Features</a>
+                <a onclick="navigateToRoute('reviews')" class="nav-link" data-route="reviews">Reviews</a>
+                <a onclick="navigateToRoute('pricing')" class="nav-link" data-route="pricing">Pricing</a>
+            </div>
+            <div class="nav-right">
+                <a onclick="navigateToRoute('tokens')" class="btn btn-secondary" style="padding: 8px 16px;"><i class="fa-solid fa-coins"></i> Tokens</a>
+                <a onclick="switchToAdminPanelLayout()" class="btn btn-primary" style="padding: 8px 16px;"><i class="fa-solid fa-shield-halved"></i> Admin</a>
+            </div>
+            <button class="menu-trigger" id="menuTrigger" onclick="toggleMobileDrawerMenu()">
+                <span></span><span></span><span></span>
+            </button>
+        </nav>
+
+        <div class="mobile-drawer" id="mobileDrawer">
+            <a onclick="toggleMobileDrawerMenu(); navigateToRoute('home')">Home</a>
+            <a onclick="toggleMobileDrawerMenu(); navigateToRoute('chat')">AI Chat</a>
+            <a onclick="toggleMobileDrawerMenu(); navigateToRoute('studio')">Plugin Builder</a>
+            <a onclick="toggleMobileDrawerMenu(); navigateToRoute('projects')">Projects</a>
+            <a onclick="toggleMobileDrawerMenu(); navigateToRoute('features')">Features</a>
+            <a onclick="toggleMobileDrawerMenu(); navigateToRoute('reviews')">Reviews</a>
+            <a onclick="toggleMobileDrawerMenu(); navigateToRoute('pricing')">Pricing</a>
+            <a onclick="toggleMobileDrawerMenu(); navigateToRoute('tokens')">Tokens</a>
+            <a onclick="toggleMobileDrawerMenu(); switchToAdminPanelLayout()">Admin Panel</a>
+        </div>
+
+        <div id="view-home" class="app-view-container active-route section-padding">
+            <section class="hero" style="min-height: 80vh; display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center; position: relative;">
+                <div style="background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.08); padding: 6px 14px; border-radius: 30px; font-size: 0.8rem; margin-bottom: 24px; display: inline-flex; align-items: center; gap: 8px;">
+                    <span style="width:6px; height:6px; background:var(--primary); border-radius:50%; box-shadow:0 0 8px var(--primary);"></span> Orchestrating Next-Gen Autonomous AI Models
+                </div>
+                <h1 class="gradient-text" style="font-family: var(--font-display); font-size: 4.5rem; font-weight: 800; line-height: 1.1; max-width: 950px; margin-bottom: 24px;">Build Complex Plugins inside an AI Synthesis Matrix.</h1>
+                <div style="display: flex; gap: 30px; margin: 24px 0; font-family: var(--font-mono); color: var(--text-muted);">
+                    <span><i class="fa-solid fa-bolt"></i> Generate</span>
+                    <span><i class="fa-solid fa-layer-group"></i> Compile</span>
+                    <span><i class="fa-solid fa-cloud-arrow-up"></i> Deploy</span>
+                </div>
+                <p style="font-size: 1.15rem; color: var(--text-muted); max-width: 600px; margin-bottom: 36px;">Architect complex logic pipelines, optimize code execution trees, and leverage persistent computational sandboxes globally.</p>
+                <div style="display: flex; gap: 16px; justify-content: center;">
+                    <a onclick="navigateToRoute('studio')" class="btn btn-primary" style="padding: 14px 28px; font-size:1rem;">Start Building <i class="fa-solid fa-arrow-right"></i></a>
+                    <a onclick="navigateToRoute('chat')" class="btn btn-secondary" style="padding: 14px 28px; font-size:1rem;">Neural Interface</a>
+                </div>
+            </section>
+        </div>
+
+        <div id="view-chat" class="app-view-container">
+            <div class="chatgpt-layout">
+                <aside class="chat-sidebar">
+                    <button class="btn btn-primary" style="justify-content: flex-start; padding: 12px 16px; border-radius: 10px; font-size:0.95rem;">
+                        <i class="fa-solid fa-pen-to-square"></i> New Chat
+                    </button>
+                    
+                    <div style="position: relative; margin: 10px 0;">
+                        <i class="fa-solid fa-magnifying-glass" style="position: absolute; left: 12px; top: 12px; color: var(--text-muted); font-size: 0.85rem;"></i>
+                        <input type="text" class="form-control" placeholder="Search Chats..." style="padding-left: 36px; border-radius: 10px; background: rgba(255,255,255,0.02);">
+                    </div>
+
+                    <div class="chat-sidebar-section">
+                        <div class="chat-sidebar-title">Pinned Chats</div>
+                        <div class="chat-history-item"><i class="fa-solid fa-thumbtack" style="font-size: 0.7rem;"></i> HyperCore DB Architecture</div>
+                        <div class="chat-history-item"><i class="fa-solid fa-thumbtack" style="font-size: 0.7rem;"></i> Custom Enchants Logic</div>
+                    </div>
+
+                    <div class="chat-sidebar-section" style="margin-top: 10px; flex: 1;">
+                        <div class="chat-sidebar-title">Chat History</div>
+                        <div class="chat-history-item active"><i class="fa-regular fa-message"></i> Fix NullPointerException</div>
+                        <div class="chat-history-item"><i class="fa-regular fa-message"></i> Create YAML Parser</div>
+                        <div class="chat-history-item"><i class="fa-regular fa-message"></i> Refactor Event Listeners</div>
+                        <div class="chat-history-item"><i class="fa-regular fa-message"></i> Generate Resource Pack</div>
+                    </div>
+
+                    <div class="chat-sidebar-section" style="border-top: 1px solid rgba(255,255,255,0.05); padding-top: 16px;">
+                        <div class="chat-history-item" onclick="navigateToRoute('projects')"><i class="fa-solid fa-box-archive"></i> Projects</div>
+                        <div class="chat-history-item"><i class="fa-solid fa-gear"></i> Settings</div>
+                    </div>
+                </aside>
+
+                <main class="chat-main">
+                    <div class="chat-scroller" id="chatScroller">
+                        <div class="chat-bubble">
+                            <div class="chat-avatar ai"><i class="fa-solid fa-bolt"></i></div>
+                            <div>
+                                <div style="font-weight: 600; margin-bottom: 4px; font-size: 0.9rem;">HyperStudio</div>
+                                <div class="chat-content">
+                                    <p>I've analyzed your <code>NullPointerException</code>. The issue occurs because the <code>playerData</code> object is being accessed before it's initialized in the asynchronous database callback.</p>
+                                    <pre style="background: #0d1117; padding: 16px; border-radius: 8px; margin: 12px 0; border: 1px solid rgba(255,255,255,0.05); overflow-x: auto;"><code style="font-family: var(--font-mono); font-size: 0.85rem;"><span style="color:#c678dd;">if</span> (playerData != <span style="color:#56b6c2;">null</span>) {
+    playerData.addTokens(<span style="color:#d19a66;">100</span>);
+} <span style="color:#c678dd;">else</span> {
+    getLogger().warning(<span style="color:#98c379;">"Profile not loaded!"</span>);
+}</code></pre>
+                                </div>
+                                <div class="chat-actions">
+                                    <button class="btn-icon" title="Copy"><i class="fa-regular fa-copy"></i></button>
+                                    <button class="btn-icon" title="Regenerate"><i class="fa-solid fa-rotate-right"></i></button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="chat-bubble user">
+                            <div class="chat-avatar user">ME</div>
+                            <div>
+                                <div style="text-align: right; font-weight: 600; margin-bottom: 4px; font-size: 0.9rem;">You</div>
+                                <div class="chat-content">That worked perfectly. Can you optimize the database connection pool next?</div>
+                            </div>
+                        </div>
+                        
+                        <div class="chat-bubble" id="typingIndicator" style="display:none;">
+                            <div class="chat-avatar ai"><i class="fa-solid fa-bolt"></i></div>
+                            <div class="chat-content" style="display: flex; align-items: center; gap: 4px; padding-top: 10px;">
+                                <span style="width: 6px; height: 6px; background: var(--text-muted); border-radius: 50%; animation: pulse 1.5s infinite ease-in-out;"></span>
+                                <span style="width: 6px; height: 6px; background: var(--text-muted); border-radius: 50%; animation: pulse 1.5s infinite ease-in-out 0.2s;"></span>
+                                <span style="width: 6px; height: 6px; background: var(--text-muted); border-radius: 50%; animation: pulse 1.5s infinite ease-in-out 0.4s;"></span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="chat-input-area">
+                        <div class="chat-input-box">
+                            <div style="position: relative;">
+                                <button class="btn-icon" id="chatUploadBtn" style="padding: 8px; background: rgba(255,255,255,0.05); border-radius: 50%;"><i class="fa-solid fa-plus"></i></button>
+                                <div class="upload-menu" id="chatUploadMenu">
+                                    <div class="upload-item"><i class="fa-regular fa-image"></i> Upload Image</div>
+                                    <div class="upload-item"><i class="fa-regular fa-file"></i> Upload File</div>
+                                    <div class="upload-item"><i class="fa-regular fa-folder-open"></i> Upload Folder</div>
+                                    <div class="upload-item"><i class="fa-regular fa-file-pdf"></i> Upload PDF</div>
+                                    <div class="upload-item"><i class="fa-regular fa-file-zipper"></i> Upload ZIP</div>
+                                    <div style="height: 1px; background: rgba(255,255,255,0.05); margin: 4px 0;"></div>
+                                    <div class="upload-item"><i class="fa-brands fa-java"></i> Upload Java Project</div>
+                                    <div class="upload-item"><i class="fa-solid fa-plug"></i> Upload Plugin</div>
+                                    <div class="upload-item"><i class="fa-solid fa-cube"></i> Upload Resource Pack</div>
+                                </div>
+                            </div>
+                            
+                            <textarea placeholder="Message HyperStudio AI..." id="chatMainInput" rows="1"></textarea>
+                            
+                            <div style="display: flex; flex-direction: column; align-items: flex-end; gap: 8px;">
+                                <select class="form-control" style="padding: 4px 8px; font-size: 0.75rem; border: none; background: transparent; color: var(--text-muted); width: auto; cursor: pointer;">
+                                    <option>GPT-5</option>
+                                    <option>Claude</option>
+                                    <option>Gemini</option>
+                                    <option>DeepSeek</option>
+                                    <option selected>Hyper AI</option>
+                                    <option>Custom Models</option>
+                                </select>
+                                <button class="btn btn-primary" style="padding: 8px 12px; border-radius: 8px;" onclick="simulateChatResponse()"><i class="fa-solid fa-arrow-up"></i></button>
+                            </div>
+                        </div>
+                        <div style="text-align: center; font-size: 0.7rem; color: var(--text-muted); margin-top: 12px;">HyperStudio AI can make mistakes. Consider verifying critical plugin code.</div>
+                    </div>
+                </main>
+            </div>
+        </div>
+
+        <div id="view-studio" class="app-view-container">
+            <div class="ide-layout">
+                <aside class="ide-sidebar">
+                    <div class="ide-header">Explorer</div>
+                    <div class="ide-file-tree">
+                        <div style="margin-bottom: 6px; font-weight: 600; color: #fff;"><i class="fa-solid fa-chevron-down" style="font-size: 0.7rem; margin-right: 4px;"></i> HyperEssentials</div>
+                        <div style="padding-left: 14px;">
+                            <div class="ide-file-item"><i class="fa-solid fa-folder" style="color: #e5c07b;"></i> src/main/java</div>
+                            <div class="ide-file-item"><i class="fa-solid fa-folder" style="color: #e5c07b;"></i> resources</div>
+                            <div class="ide-file-item active"><i class="fa-brands fa-java" style="color: #61afef;"></i> CoreEngine.java</div>
+                            <div class="ide-file-item"><i class="fa-brands fa-java" style="color: #61afef;"></i> DatabaseManager.java</div>
+                            <div class="ide-file-item"><i class="fa-solid fa-file-code" style="color: #e06c75;"></i> plugin.yml</div>
+                            <div class="ide-file-item"><i class="fa-solid fa-file-code" style="color: #e06c75;"></i> config.yml</div>
+                            <div class="ide-file-item"><i class="fa-solid fa-file-lines" style="color: #98c379;"></i> pom.xml</div>
+                        </div>
+                        <div style="margin-top: 20px; margin-bottom: 6px; font-weight: 600; color: #fff;"><i class="fa-solid fa-chevron-down" style="font-size: 0.7rem; margin-right: 4px;"></i> Dependencies</div>
+                        <div style="padding-left: 14px;">
+                            <div class="ide-file-item"><i class="fa-solid fa-box"></i> ProtocolLib</div>
+                            <div class="ide-file-item"><i class="fa-solid fa-box"></i> Vault</div>
+                            <div class="ide-file-item"><i class="fa-solid fa-box"></i> HyperAPI</div>
+                        </div>
+                    </div>
+                </aside>
+
+                <main class="ide-editor-area">
+                    <div class="ide-tabs">
+                        <div class="ide-tab active"><i class="fa-brands fa-java" style="color: #61afef;"></i> CoreEngine.java <i class="fa-solid fa-xmark" style="font-size: 0.7rem; margin-left: 8px;"></i></div>
+                        <div class="ide-tab"><i class="fa-solid fa-file-code" style="color: #e06c75;"></i> plugin.yml</div>
+                    </div>
+                    <div class="ide-code">
+<pre><code><span class="keyword">package</span> com.hyperstudio.essentials;
+
+<span class="keyword">import</span> org.bukkit.plugin.java.JavaPlugin;
+<span class="keyword">import</span> com.hyperstudio.api.HyperMatrix;
+
+<span class="keyword">public class</span> <span class="class">CoreEngine</span> <span class="keyword">extends</span> JavaPlugin {
+
+    <span class="keyword">private static</span> CoreEngine instance;
+
+    <span class="keyword">@Override</span>
+    <span class="keyword">public void</span> <span class="method">onEnable</span>() {
+        instance = <span class="keyword">this</span>;
+        getLogger().info(<span class="string">"Initializing HyperEssentials Engine..."</span>);
+        
+        <span class="comment">// Auto-generated Dependency Injection</span>
+        HyperMatrix.bind(instance);
+        
+        registerCommands();
+        registerListeners();
+    }
+    
+    <span class="keyword">public static</span> CoreEngine <span class="method">getInstance</span>() {
+        <span class="keyword">return</span> instance;
+    }
+}</code></pre>
+                    </div>
+                </main>
+
+                <aside class="ide-assistant">
+                    <div class="ide-header" style="padding: 0 0 12px 0; border-bottom: 1px solid rgba(255,255,255,0.05); margin-bottom: 12px;">AI Assistant</div>
+                    <div style="flex: 1; overflow-y: auto; font-size: 0.85rem; display: flex; flex-direction: column; gap: 16px;">
+                        <div style="background: rgba(0, 242, 254, 0.05); border: 1px solid var(--border-glow); padding: 12px; border-radius: 8px;">
+                            <div style="font-weight: 600; color: var(--primary); margin-bottom: 6px;"><i class="fa-solid fa-wand-magic-sparkles"></i> Diagnostics</div>
+                            <p style="color: var(--text-muted);">No syntax errors detected. Would you like me to generate the <code>registerCommands()</code> method automatically?</p>
+                            <button class="btn btn-primary" style="width: 100%; margin-top: 10px; padding: 6px; font-size: 0.8rem;">Generate Code</button>
+                        </div>
+                        <div class="form-group">
+                            <textarea class="form-control" rows="3" placeholder="Ask AI to modify this file..." style="font-size: 0.8rem; resize: none;"></textarea>
+                            <button class="btn btn-secondary" style="width: 100%; padding: 6px; font-size: 0.8rem;">Submit to AI</button>
+                        </div>
+                    </div>
+                    <div style="display: flex; flex-direction: column; gap: 8px; padding-top: 16px; border-top: 1px solid rgba(255,255,255,0.05);">
+                        <button class="btn btn-primary"><i class="fa-solid fa-play"></i> Cloud Build</button>
+                        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px;">
+                            <button class="btn btn-secondary" style="font-size: 0.75rem; padding: 6px;"><i class="fa-solid fa-download"></i> Download</button>
+                            <button class="btn btn-secondary" style="font-size: 0.75rem; padding: 6px;"><i class="fa-solid fa-cloud-arrow-up"></i> Deploy</button>
+                        </div>
+                    </div>
+                </aside>
+
+                <div class="ide-bottom-panel">
+                    <div class="ide-panel-tabs">
+                        <div class="ide-panel-tab">Problems <span style="background: rgba(255,255,255,0.1); padding: 2px 6px; border-radius: 10px; font-size: 0.7rem; margin-left: 4px;">0</span></div>
+                        <div class="ide-panel-tab">Output</div>
+                        <div class="ide-panel-tab active">Terminal</div>
+                        <div class="ide-panel-tab">Build Logs</div>
+                    </div>
+                    <div class="ide-terminal-content">
+                        <div>root@hyperstudio:~/workspace/HyperEssentials$ mvn clean package</div>
+                        <div style="color: #d4d4d4;">[INFO] Scanning for projects...</div>
+                        <div style="color: #d4d4d4;">[INFO] Building HyperEssentials 1.0-SNAPSHOT</div>
+                        <div style="color: #d4d4d4;">[INFO] --- maven-compiler-plugin:3.8.1:compile (default-compile) @ HyperEssentials ---</div>
+                        <div>[SUCCESS] BUILD SUCCESS</div>
+                        <div style="color: #d4d4d4;">[INFO] Total time:  1.418 s</div>
+                        <div style="color: #d4d4d4;">[INFO] Finished at: 2026-06-17T21:24:19Z</div>
+                        <div>root@hyperstudio:~/workspace/HyperEssentials$ <span style="animation: blink 1s step-end infinite;">_</span></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div id="view-projects" class="app-view-container section-padding">
+            <div class="flex-between" style="margin-bottom: 30px;">
+                <div>
+                    <h2 style="font-family: var(--font-display); font-size: 2rem; margin-bottom: 8px;">Public Projects</h2>
+                    <p style="color: var(--text-muted);">Explore, fork, and continue building cloud plugins created by the community.</p>
+                </div>
+                <button class="btn btn-primary"><i class="fa-solid fa-plus"></i> Publish Project</button>
+            </div>
+            
+            <div style="display: flex; gap: 16px; margin-bottom: 24px; flex-wrap: wrap;">
+                <div style="flex: 1; min-width: 250px; position: relative;">
+                    <i class="fa-solid fa-magnifying-glass" style="position: absolute; left: 14px; top: 14px; color: var(--text-muted);"></i>
+                    <input type="text" class="form-control" placeholder="Search projects, categories, creators..." style="padding-left: 40px;">
+                </div>
+                <select class="form-control" style="width: auto;">
+                    <option>All Categories</option>
+                    <option>Minigames</option>
+                    <option>Core/Essentials</option>
+                    <option>Anti-Cheat</option>
+                </select>
+                <select class="form-control" style="width: auto;">
+                    <option>Most Liked</option>
+                    <option>Most Downloaded</option>
+                    <option>Recently Updated</option>
+                </select>
+            </div>
+
+            <div class="projects-grid">
+                <div class="glass-card project-card">
+                    <div class="project-img">
+                        <div class="project-img-placeholder"><i class="fa-solid fa-cube"></i></div>
+                        <div style="position: absolute; top: 12px; right: 12px; background: rgba(0,0,0,0.6); backdrop-filter: blur(4px); padding: 4px 10px; border-radius: 20px; font-size: 0.75rem; border: 1px solid rgba(255,255,255,0.1);">v2.4.1</div>
+                    </div>
+                    <div class="project-content">
+                        <div class="project-meta-top">
+                            <span><i class="fa-solid fa-user" style="margin-right:4px;"></i> HyperDev</span>
+                            <span>Updated 2h ago</span>
+                        </div>
+                        <div class="project-title">HyperMarket Advanced</div>
+                        <div class="project-desc">A fully automated GUI-based global market system with dynamic pricing algorithms and SQL sync.</div>
+                        <div class="project-stats">
+                            <span><i class="fa-solid fa-heart" style="color: var(--danger);"></i> 1.2k</span>
+                            <span><i class="fa-solid fa-download" style="color: var(--primary);"></i> 8.5k</span>
+                            <span><i class="fa-solid fa-eye"></i> 14k</span>
+                        </div>
+                        <div class="project-actions">
+                            <button class="btn btn-primary" style="font-size: 0.8rem; padding: 8px;"><i class="fa-solid fa-code-fork"></i> Fork Project</button>
+                            <button class="btn btn-secondary" style="font-size: 0.8rem; padding: 8px;"><i class="fa-solid fa-download"></i> Download</button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="glass-card project-card">
+                    <div class="project-img">
+                        <div class="project-img-placeholder"><i class="fa-solid fa-shield-halved"></i></div>
+                    </div>
+                    <div class="project-content">
+                        <div class="project-meta-top">
+                            <span><i class="fa-solid fa-user" style="margin-right:4px;"></i> MatrixSec</span>
+                            <span>Updated 1d ago</span>
+                        </div>
+                        <div class="project-title">Aegis Anti-Cheat Core</div>
+                        <div class="project-desc">Heuristic machine-learning based combat and movement detection packet processor.</div>
+                        <div class="project-stats">
+                            <span><i class="fa-solid fa-heart" style="color: var(--danger);"></i> 890</span>
+                            <span><i class="fa-solid fa-download" style="color: var(--primary);"></i> 3.2k</span>
+                            <span><i class="fa-solid fa-eye"></i> 9k</span>
+                        </div>
+                        <div class="project-actions">
+                            <button class="btn btn-primary" style="font-size: 0.8rem; padding: 8px;"><i class="fa-solid fa-code-fork"></i> Fork Project</button>
+                            <button class="btn btn-secondary" style="font-size: 0.8rem; padding: 8px;"><i class="fa-solid fa-download"></i> Download</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div id="view-features" class="app-view-container section-padding">
+            <div class="section-header">
+                <h2>The Ultimate Developer Toolkit</h2>
+                <p>Every tool required to synthesize, compile, and broadcast framework assets at absolute execution speed.</p>
+            </div>
+            <div class="features-grid">
+                <div class="glass-card feature-card"><div class="feature-icon"><i class="fa-solid fa-code"></i></div><h3>AI Plugin Development</h3><p style="color:var(--text-muted); font-size:0.9rem; margin-top:10px;">Construct complete, production-ready Java plugins using conversational prompts.</p></div>
+                <div class="glass-card feature-card"><div class="feature-icon"><i class="fa-solid fa-bug-slash"></i></div><h3>Plugin Fixing & Debugging</h3><p style="color:var(--text-muted); font-size:0.9rem; margin-top:10px;">Paste stack traces directly. The AI pinpoints issues and rewrites faulty logic instantly.</p></div>
+                <div class="glass-card feature-card"><div class="feature-icon"><i class="fa-solid fa-cloud"></i></div><h3>Cloud Build & Compile</h3><p style="color:var(--text-muted); font-size:0.9rem; margin-top:10px;">Compile Maven and Gradle projects directly in your browser with zero local setup.</p></div>
+                <div class="glass-card feature-card"><div class="feature-icon"><i class="fa-brands fa-java"></i></div><h3>Java Generation</h3><p style="color:var(--text-muted); font-size:0.9rem; margin-top:10px;">Generate complex NMS hooks, packets, and API integrations perfectly formatted.</p></div>
+                <div class="glass-card feature-card"><div class="feature-icon"><i class="fa-solid fa-file-lines"></i></div><h3>YAML Generator</h3><p style="color:var(--text-muted); font-size:0.9rem; margin-top:10px;">Automatically build perfect plugin.yml and complex config.yml structures.</p></div>
+                <div class="glass-card feature-card"><div class="feature-icon"><i class="fa-solid fa-cubes"></i></div><h3>Resource Pack Creator</h3><p style="color:var(--text-muted); font-size:0.9rem; margin-top:10px;">Generate textures and map JSON models dynamically with AI image generation.</p></div>
+                <div class="glass-card feature-card"><div class="feature-icon"><i class="fa-solid fa-code-branch"></i></div><h3>Version Control</h3><p style="color:var(--text-muted); font-size:0.9rem; margin-top:10px;">Built-in Git integration. Track history, branch logic, and revert specific file changes.</p></div>
+                <div class="glass-card feature-card"><div class="feature-icon"><i class="fa-solid fa-network-wired"></i></div><h3>Dependency Management</h3><p style="color:var(--text-muted); font-size:0.9rem; margin-top:10px;">Auto-resolve pom.xml imports for Spigot, Paper, ProtocolLib, and more.</p></div>
+            </div>
+        </div>
+
+        <div id="view-reviews" class="app-view-container section-padding">
+            <div class="flex-between" style="margin-bottom: 40px; flex-wrap: wrap; gap: 20px;">
+                <div>
+                    <h2 style="font-family: var(--font-display); font-size: 2rem; margin-bottom: 8px;">System Validation Reports</h2>
+                    <p style="color: var(--text-muted);">Verified reviews from lead developers and network owners.</p>
+                </div>
+                <button class="btn btn-primary" onclick="document.getElementById('reviewModal').classList.add('active')"><i class="fa-solid fa-star"></i> Write a Review</button>
+            </div>
+
+            <div style="display: flex; gap: 16px; margin-bottom: 24px;">
+                <select class="form-control" style="width: 200px;">
+                    <option>Highest Rated</option>
+                    <option>Newest First</option>
+                    <option>Verified Users Only</option>
+                </select>
+            </div>
+
+            <div class="reviews-grid">
+                <div class="glass-card" style="padding: 24px;">
+                    <div class="flex-between" style="margin-bottom: 16px;">
+                        <div class="stars"><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i></div>
+                        <span style="font-size: 0.75rem; color: var(--success); background: rgba(56,239,125,0.1); padding: 4px 8px; border-radius: 12px;"><i class="fa-solid fa-check"></i> Verified</span>
+                    </div>
+                    <p style="font-size: 0.95rem; margin-bottom: 20px; color: #fff;">"HyperStudio saved my network launch. We had a critical DB desync issue in our custom minigame core. I pasted the classes, and the AI rebuilt the SQL threads flawlessly in 30 seconds."</p>
+                    <div style="display: flex; align-items: center; gap: 12px;">
+                        <div style="width: 40px; height: 40px; border-radius: 50%; background: var(--secondary); display: flex; align-items: center; justify-content: center; font-weight: 700; color: #000;">AX</div>
+                        <div>
+                            <div style="font-weight: 600; font-size: 0.9rem;">Alex V.</div>
+                            <div style="font-size: 0.75rem; color: var(--text-muted);">Network Owner</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div id="view-pricing" class="app-view-container section-padding">
+            <div class="section-header">
+                <h2>Select Your Execution Tier</h2>
+                <p>From hobbyist developers to enterprise networks. Scale your AI compute power.</p>
+            </div>
+            
+            <div class="pricing-grid">
+                <div class="glass-card pricing-card">
+                    <div class="pricing-tier text-muted">Free</div>
+                    <div class="pricing-price">$0<span>/mo</span></div>
+                    <ul class="pricing-features">
+                        <li><i class="fa-solid fa-check"></i> 50,000 Monthly Tokens</li>
+                        <li><i class="fa-solid fa-check"></i> Standard Queue</li>
+                        <li><i class="fa-solid fa-check"></i> 1 Active Project</li>
+                        <li><i class="fa-solid fa-check"></i> Hyper AI Base Model</li>
+                        <li><i class="fa-solid fa-check"></i> 50MB Storage</li>
+                    </ul>
+                    <button class="btn btn-secondary" style="width: 100%; margin-top: 20px;">Current Plan</button>
+                </div>
+                <div class="glass-card pricing-card">
+                    <div class="pricing-tier">Starter</div>
+                    <div class="pricing-price">$9<span>/mo</span></div>
+                    <ul class="pricing-features">
+                        <li><i class="fa-solid fa-check"></i> 250,000 Monthly Tokens</li>
+                        <li><i class="fa-solid fa-check"></i> Priority Queue</li>
+                        <li><i class="fa-solid fa-check"></i> 5 Active Projects</li>
+                        <li><i class="fa-solid fa-check"></i> Hyper AI Pro</li>
+                        <li><i class="fa-solid fa-check"></i> 250MB Storage</li>
+                    </ul>
+                    <button class="btn btn-secondary" style="width: 100%; margin-top: 20px;">Upgrade</button>
+                </div>
+                <div class="glass-card pricing-card">
+                    <div class="pricing-tier">Creator</div>
+                    <div class="pricing-price">$19<span>/mo</span></div>
+                    <ul class="pricing-features">
+                        <li><i class="fa-solid fa-check"></i> 1M Monthly Tokens</li>
+                        <li><i class="fa-solid fa-check"></i> High Priority Queue</li>
+                        <li><i class="fa-solid fa-check"></i> 15 Active Projects</li>
+                        <li><i class="fa-solid fa-check"></i> Claude 3.5 Integration</li>
+                        <li><i class="fa-solid fa-check"></i> 1GB Storage</li>
+                    </ul>
+                    <button class="btn btn-secondary" style="width: 100%; margin-top: 20px;">Upgrade</button>
+                </div>
+                <div class="glass-card pricing-card" style="border-color: var(--primary); transform: scale(1.05); z-index: 10; background: rgba(12, 17, 33, 0.9);">
+                    <div class="pricing-badge">MOST POPULAR</div>
+                    <div class="pricing-tier" style="color: var(--primary);">Developer</div>
+                    <div class="pricing-price">$39<span>/mo</span></div>
+                    <ul class="pricing-features">
+                        <li><i class="fa-solid fa-check"></i> 3M Monthly Tokens</li>
+                        <li><i class="fa-solid fa-check"></i> Instant Build Queue</li>
+                        <li><i class="fa-solid fa-check"></i> Unlimited Projects</li>
+                        <li><i class="fa-solid fa-check"></i> GPT-5 & Claude Models</li>
+                        <li><i class="fa-solid fa-check"></i> 5GB Storage + Cloud Builds</li>
+                        <li><i class="fa-solid fa-check"></i> Priority Support</li>
+                    </ul>
+                    <button class="btn btn-primary" style="width: 100%; margin-top: 20px;">Go Developer</button>
+                </div>
+                <div class="glass-card pricing-card">
+                    <div class="pricing-tier">Professional</div>
+                    <div class="pricing-price">$79<span>/mo</span></div>
+                    <ul class="pricing-features">
+                        <li><i class="fa-solid fa-check"></i> 8M Monthly Tokens</li>
+                        <li><i class="fa-solid fa-check"></i> Dedicated Render Node</li>
+                        <li><i class="fa-solid fa-check"></i> All Premium AI Models</li>
+                        <li><i class="fa-solid fa-check"></i> 20GB Storage</li>
+                        <li><i class="fa-solid fa-check"></i> Team Collaboration (3)</li>
+                    </ul>
+                    <button class="btn btn-secondary" style="width: 100%; margin-top: 20px;">Upgrade</button>
+                </div>
+                <div class="glass-card pricing-card">
+                    <div class="pricing-tier">Enterprise</div>
+                    <div class="pricing-price">$149<span>/mo</span></div>
+                    <ul class="pricing-features">
+                        <li><i class="fa-solid fa-check"></i> 20M Monthly Tokens</li>
+                        <li><i class="fa-solid fa-check"></i> Custom API Integrations</li>
+                        <li><i class="fa-solid fa-check"></i> Custom System Prompts</li>
+                        <li><i class="fa-solid fa-check"></i> 100GB Storage</li>
+                        <li><i class="fa-solid fa-check"></i> Dedicated Success Manager</li>
+                    </ul>
+                    <button class="btn btn-secondary" style="width: 100%; margin-top: 20px;">Contact Sales</button>
+                </div>
+                <div class="glass-card pricing-card">
+                    <div class="pricing-tier" style="color: var(--secondary);">Ultimate</div>
+                    <div class="pricing-price">$299<span>/mo</span></div>
+                    <ul class="pricing-features">
+                        <li><i class="fa-solid fa-check"></i> Unlimited Monthly Tokens</li>
+                        <li><i class="fa-solid fa-check"></i> Bare-Metal Server Access</li>
+                        <li><i class="fa-solid fa-check"></i> Train Custom AI Models</li>
+                        <li><i class="fa-solid fa-check"></i> 1TB NVMe Storage</li>
+                        <li><i class="fa-solid fa-check"></i> 24/7 Phone Support</li>
+                    </ul>
+                    <button class="btn btn-secondary" style="width: 100%; margin-top: 20px;">Contact Sales</button>
+                </div>
+            </div>
+        </div>
+
+        <div id="view-tokens" class="app-view-container section-padding">
+            <h2 style="font-family: var(--font-display); margin-bottom: 30px;">Token Dashboard</h2>
+            
+            <div class="token-dash-grid">
+                <div class="token-stat-card"><h4>Current Balance</h4><div class="val" style="color: var(--primary);">4,250</div></div>
+                <div class="token-stat-card"><h4>Today's Usage</h4><div class="val">840</div></div>
+                <div class="token-stat-card"><h4>Monthly Usage</h4><div class="val">12,450</div></div>
+                <div class="token-stat-card"><h4>Remaining Limit</h4><div class="val" style="color: var(--success);">37,550</div></div>
+            </div>
+
+            <div class="glass-card" style="padding: 24px; margin-bottom: 30px; height: 300px; display: flex; align-items: center; justify-content: center; border: 1px dashed rgba(255,255,255,0.1);">
+                <span style="color: var(--text-muted); font-family: var(--font-mono);">[ Interactive Token Usage Chart Rendered Here ]</span>
+            </div>
+
+            <h3 style="font-family: var(--font-display); margin-bottom: 16px;">Request History</h3>
+            <div class="table-container">
+                <table class="data-table">
+                    <thead><tr><th>Date & Time</th><th>AI Model</th><th>Tokens Used</th><th>Cost</th><th>Project Context</th></tr></thead>
+                    <tbody>
+                        <tr><td>2026-06-17 21:15</td><td>Hyper AI Pro</td><td>450</td><td>0.00 Credits</td><td>HyperEssentials</td></tr>
+                        <tr><td>2026-06-17 20:42</td><td>GPT-5</td><td>1,204</td><td>-0.02 Credits</td><td>DatabaseManager.java</td></tr>
+                        <tr><td>2026-06-16 14:22</td><td>Claude 3.5</td><td>8,420</td><td>-0.14 Credits</td><td>MinigameCore Setup</td></tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <div id="adminPanelMasterLayout" style="display:none;">
+        <div class="admin-frame">
+            <aside class="admin-sidebar">
+                <div class="logo" onclick="switchToWebsiteLayout()" style="cursor:pointer; font-size:1.1rem; margin-bottom: 20px;">
+                    <div class="logo-mark" style="width:20px; height:20px;"></div> HyperAdmin
+                </div>
+                <ul class="admin-menu">
+                    <li class="active" data-subview="admin-models" onclick="switchAdminSubview('admin-models')"><i class="fa-solid fa-server"></i> AI Management</li>
+                    <li data-subview="admin-users" onclick="switchAdminSubview('admin-users')"><i class="fa-solid fa-users-gear"></i> User Token Manager</li>
+                </ul>
+                <button class="btn btn-secondary" style="margin-top: auto;" onclick="switchToWebsiteLayout()"><i class="fa-solid fa-arrow-left"></i> Exit Deck</button>
+            </aside>
+
+            <main class="admin-viewport">
+                <div id="admin-models" class="admin-view active">
+                    <div class="flex-between" style="margin-bottom: 30px;">
+                        <h2 style="font-family: var(--font-display); font-size: 2rem;">AI Management</h2>
+                        <button class="btn btn-primary" onclick="document.getElementById('initModelModal').classList.add('active')"><i class="fa-solid fa-plus"></i> Initialize Model</button>
+                    </div>
+                    
+                    <p style="color: var(--text-muted); margin-bottom: 24px;">Configure up to 10 processing models for the cluster array.</p>
+
+                    <div class="ai-models-grid">
+                        <div class="glass-card ai-model-card">
+                            <div class="model-header">
+                                <div style="display: flex; gap: 12px; align-items: center;">
+                                    <div style="width: 40px; height: 40px; background: rgba(255,255,255,0.05); border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 1.2rem;"><i class="fa-solid fa-brain"></i></div>
+                                    <div>
+                                        <div style="font-weight: 700; font-size: 1.1rem;">GPT-5</div>
+                                        <div style="font-size: 0.75rem; color: var(--text-muted);">Provider: OpenAI | v5.0-turbo</div>
+                                    </div>
+                                </div>
+                                <div class="model-status active">Active</div>
+                            </div>
+                            <div class="model-metrics">
+                                <div>Requests: <span style="color:#fff;">1.4M</span></div>
+                                <div>Latency: <span style="color:var(--success);">14ms</span></div>
+                                <div style="grid-column: 1/-1;">Token Usage: <span style="color:#fff;">84.2B</span></div>
+                            </div>
+                            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px;">
+                                <button class="btn btn-secondary" style="font-size: 0.75rem;"><i class="fa-solid fa-gear"></i> Configure</button>
+                                <button class="btn btn-secondary" style="font-size: 0.75rem;"><i class="fa-solid fa-pause"></i> Pause</button>
+                                <button class="btn btn-secondary" style="font-size: 0.75rem;"><i class="fa-solid fa-terminal"></i> Logs</button>
+                                <button class="btn btn-danger" style="font-size: 0.75rem;"><i class="fa-solid fa-trash"></i> Delete</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div id="admin-users" class="admin-view">
+                    <div class="flex-between" style="margin-bottom: 30px;">
+                        <h2 style="font-family: var(--font-display); font-size: 2rem;">User Token Manager</h2>
+                        <button class="btn btn-primary"><i class="fa-solid fa-layer-group"></i> Bulk Assignment</button>
+                    </div>
+
+                    <div style="display: flex; gap: 16px; margin-bottom: 24px;">
+                        <input type="text" class="form-control" placeholder="Search Username or Email..." style="max-width: 300px;">
+                        <select class="form-control" style="width: auto;">
+                            <option>Sort by Balance (High-Low)</option>
+                            <option>Sort by Login Date</option>
+                        </select>
+                    </div>
+
+                    <div class="table-container">
+                        <table class="data-table">
+                            <thead><tr><th>User</th><th>Role</th><th>Current Tokens</th><th>Last Login</th><th>Actions</th></tr></thead>
+                            <tbody>
+                                <tr>
+                                    <td>
+                                        <div style="display: flex; align-items: center; gap: 12px;">
+                                            <div style="width: 32px; height: 32px; border-radius: 50%; background: var(--primary); color:#000; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size:0.8rem;">MA</div>
+                                            <div>
+                                                <div style="font-weight: 600;">MatrixArchitect</div>
+                                                <div style="font-size: 0.75rem; color: var(--text-muted);">admin@hyperforge.net</div>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td><span style="background: rgba(157,78,221,0.2); color: var(--secondary); padding: 4px 8px; border-radius: 4px; font-size: 0.7rem; font-weight: 700;">ADMIN</span></td>
+                                    <td style="font-weight: 700; font-family: var(--font-mono);">∞</td>
+                                    <td>2 mins ago</td>
+                                    <td>
+                                        <div style="display: flex; gap: 6px;">
+                                            <button class="btn btn-secondary" style="padding: 4px 8px; font-size: 0.7rem;"><i class="fa-solid fa-plus"></i> Add</button>
+                                            <button class="btn btn-secondary" style="padding: 4px 8px; font-size: 0.7rem;"><i class="fa-solid fa-minus"></i> Remove</button>
+                                            <button class="btn btn-secondary" style="padding: 4px 8px; font-size: 0.7rem;"><i class="fa-solid fa-pen"></i> Set</button>
+                                            <button class="btn btn-secondary" style="padding: 4px 8px; font-size: 0.7rem;"><i class="fa-solid fa-clock-rotate-left"></i> History</button>
+                                        </div>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </main>
+        </div>
+    </div>
+
+    <div class="modal-overlay" id="reviewModal">
+        <div class="modal-box" style="max-width: 500px;">
+            <h3 style="font-family: var(--font-display); font-size: 1.5rem; margin-bottom: 20px;">Submit Public Review</h3>
+            <div class="form-group" style="margin-bottom: 16px;">
+                <label>Rating</label>
+                <div style="font-size: 1.5rem; color: var(--text-muted); cursor: pointer;"><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i></div>
+            </div>
+            <div class="form-group" style="margin-bottom: 16px;">
+                <label>Review Text</label>
+                <textarea class="form-control" rows="4" placeholder="Share your experience building with HyperStudio..."></textarea>
+            </div>
+            <div class="form-group" style="margin-bottom: 24px;">
+                <label>Upload Screenshot (Optional)</label>
+                <input type="file" class="form-control" style="padding: 8px;">
+            </div>
+            <div style="display: flex; gap: 12px; justify-content: flex-end;">
+                <button class="btn btn-secondary" onclick="document.getElementById('reviewModal').classList.remove('active')">Cancel</button>
+                <button class="btn btn-primary" onclick="document.getElementById('reviewModal').classList.remove('active')">Publish Review</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal-overlay" id="initModelModal">
+        <div class="modal-box">
+            <h3 style="font-family: var(--font-display); font-size: 1.5rem;">Initialize AI Model</h3>
+            <p style="color: var(--text-muted); font-size: 0.85rem; margin-bottom: 20px;">Bind a new LLM provider into the HyperStudio global execution cluster.</p>
+            
+            <form class="form-grid" onsubmit="event.preventDefault(); document.getElementById('initModelModal').classList.remove('active');">
+                <div class="form-group"><label>Model Name</label><input type="text" class="form-control" required placeholder="e.g. GPT-5"></div>
+                <div class="form-group"><label>Provider</label><input type="text" class="form-control" required placeholder="e.g. OpenAI"></div>
+                
+                <div class="form-group"><label>Version</label><input type="text" class="form-control" placeholder="e.g. v5.0-turbo"></div>
+                <div class="form-group"><label>Avatar Icon URL</label><input type="url" class="form-control" placeholder="https://..."></div>
+                
+                <div class="form-group full"><label>API Endpoint</label><input type="url" class="form-control" required placeholder="https://api.openai.com/v1/chat/completions"></div>
+                <div class="form-group full"><label>API Key</label><input type="password" class="form-control" required placeholder="sk-..."></div>
+                
+                <div class="form-group full"><label>Description</label><input type="text" class="form-control" placeholder="Short internal note about this model's purpose..."></div>
+                
+                <div class="form-group full"><label>System Prompt Core</label><textarea class="form-control" rows="3" placeholder="You are an expert Java developer for Spigot/Paper..."></textarea></div>
+                
+                <div class="form-group"><label>Temperature (0.0 - 2.0)</label><input type="number" class="form-control" step="0.1" value="0.7"></div>
+                <div class="form-group"><label>Max Tokens per Request</label><input type="number" class="form-control" value="8192"></div>
+                <div class="form-group full"><label>Context Window Size</label><input type="number" class="form-control" value="128000"></div>
+                
+                <div class="form-group" style="padding-top: 10px;">
+                    <label class="toggle-switch"><input type="checkbox" checked style="display:none;"><div class="toggle-track"></div> Enable Streaming Output</label>
+                </div>
+                <div class="form-group" style="padding-top: 10px;">
+                    <label class="toggle-switch"><input type="checkbox" checked style="display:none;"><div class="toggle-track"></div> Vision Support</label>
+                </div>
+                <div class="form-group" style="padding-top: 10px;">
+                    <label class="toggle-switch"><input type="checkbox" checked style="display:none;"><div class="toggle-track"></div> Function Calling Support</label>
+                </div>
+                <div class="form-group" style="padding-top: 10px;">
+                    <label class="toggle-switch"><input type="checkbox" checked style="display:none;"><div class="toggle-track"></div> Use For Embeddings</label>
+                </div>
+
+                <div class="form-group full" style="display: flex; gap: 12px; justify-content: flex-end; margin-top: 20px; border-top: 1px solid rgba(255,255,255,0.05); padding-top: 20px;">
+                    <button type="button" class="btn btn-secondary" onclick="document.getElementById('initModelModal').classList.remove('active')">Abort</button>
+                    <button type="submit" class="btn btn-primary">Deploy Model Node</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script src="js/app.js"></script>
+</body>
+</html>
